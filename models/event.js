@@ -13,6 +13,7 @@ const eventSchema = new Schema({
   TotalTickets: { type: Number, required: true },
   SoldTickets: { type: Number, required: true },
   TicketPrice:{type:Number,required:true},
+  eventTags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Interest' }],
   Status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], required: true },
 
   ApprovedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'PlatformAdmin' },
