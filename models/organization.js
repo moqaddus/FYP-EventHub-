@@ -6,8 +6,8 @@ const orgSchema=new Schema({
   Status: { type: String, enum: ['Gold', 'Silver', 'Bronze'], required: true },
 //Organization: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true },
   Description: { type: String },
-  OrganizationEvents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }],
-  SendMessages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],//Added
+  OrganizationEvents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event',required:false }],
+  SendMessages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message',required:false }],//Added
 
 },
 {timestamps:true}
@@ -15,4 +15,4 @@ const orgSchema=new Schema({
 
 const Organization = mongoose.model('Organization', orgSchema);
 
-module.exports = Organization;
+export default Organization;

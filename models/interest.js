@@ -9,4 +9,4 @@ const interestSchema = new Schema({
 
 const Interests = mongoose.model('Interests', interestSchema);
 
-module.exports = Interests;
+export default Interests;

@@ -14,6 +14,6 @@ dbConnect();
 app.use(bodyParser.json());
 
 
-app.use('/users',userRoutes)
+app.use('/user',userRoutes)
 
 app.listen(PORT,()=>console.log('SERVER RUNNING NOW...'));

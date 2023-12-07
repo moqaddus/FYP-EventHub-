@@ -2,7 +2,11 @@ import mongoose from 'mongoose';
 const {Schema} =mongoose;
 
 const userSchema=new Schema({
-  ID: { type: Number, required: true },
+  ID: {
+    type: String,
+    required:true,
+    default: () => uuidv4(), // Use a function to generate a new UUID for each document
+  },
   Email: { type: String, required: true },
   Username: { type: String, required: true },
   Password: { type: String, required: true },
@@ -12,6 +16,7 @@ const userSchema=new Schema({
 )
 
 
-const User = mongoose.model('User', userSchema);
+const user = mongoose.model('User', userSchema);
 
-module.exports = User;
+export default user;
+//module.exports = User;

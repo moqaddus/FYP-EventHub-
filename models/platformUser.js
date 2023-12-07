@@ -12,6 +12,6 @@ const platformUserSchema=new Schema({
 )
 
 
-const User = mongoose.model('platformUser', platformUserSchema);
+const platformUser = mongoose.model('platformUser', platformUserSchema);
 
-module.exports = User;
+export default platformUser;
