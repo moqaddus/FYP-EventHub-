@@ -6,6 +6,8 @@ import { PORT } from './config/index.js';
 
 
 import userRoutes from './routes/user.js'
+import orgRoutes from './routes/organization.js'
+import eventRoutes from './routes/event.js'
 
 const app=express();
 
@@ -15,5 +17,7 @@ app.use(bodyParser.json());
 
 
 app.use('/user',userRoutes)
+app.use('/Organization',orgRoutes)
+app.use('/Events',eventRoutes)
 
-app.listen(PORT,()=>console.log('SERVER RUNNING NOW...'));
+app.listen(PORT,()=>console.log(`SERVER RUNNING NOW...${PORT}`));
