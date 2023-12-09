@@ -45,7 +45,6 @@ export const updateUser=async(req,res,next)=>{
       const hashedPassword=await bcrypt.hash(Password,10);
       req.body.Password=hashedPassword
     }
-    
     await userSchema.updateOne({_id:foundId},req.body)
     
 

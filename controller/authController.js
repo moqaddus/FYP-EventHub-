@@ -11,8 +11,9 @@ uuidv4();
 export const register=async(req,res,next)=>{
   //if already registered(email)
 
-  const {Username,Email,Password,type}=req.body
   try {
+    let interestIds;
+    const {Username,Email,Password,type}=req.body
     //if already registered
     const emailInUse=await userSchema.exists({Email});
     const usernameInUse=await userSchema.exists({Password});
@@ -26,12 +27,52 @@ export const register=async(req,res,next)=>{
     }
     else
     {
-
+      console.log("I am in 1st else");
     //hashed passowrd
     const hashedPassword=await bcrypt.hash(Password,10);
     const user=new userSchema({ID:uuidv4(),Username:Username,Email:Email,Password:hashedPassword,type:type})
     await user.save();
-    res.status(201).json({user:user})
+    //res.status(201).json({user:user})
+    if(type=="OrgAdmin")
+      {
+        const {Status,Description}=req.body
+        if(!Status)
+        {
+          res.status(401).json({message:'Status not selected'});
+        }
+        const User=new OrgSchema({ID:user._id,Status,Description});
+        await User.save();
+  
+      }
+      else if(type=="PlatformAdmin")
+      {
+        
+        const User=new PlatformAdmin({ID:user._id})
+        await User.save(); 
+      }
+      else if(type=="PlatformUser")
+      {
+        const {Bio,Interests}=req.body;
+        if(Interests)
+        {
+          interestIds = await Promise.all(Interests.map(async (interestName) => {
+            // Try to find the interest by name
+            const interest = await InterestSchema.findOne({ Name: interestName });
+      
+            // If found, return the ID; otherwise, you might want to handle this case
+            return interest ? interest._id : null;
+          }));
+        }
+      
+        const User=new PlatfromUser({ID:user._id,Interests:interestIds,Bio})
+        User.save();
+      }
+      else
+      {
+        res.status(401).json({message:'Wrong type'});
+      }
+      res.status(401).json({message:'User Added Successfully'});
+    
     }
   } catch (error) {
     console.log({error});
@@ -96,22 +137,29 @@ export const getOneUser=async(req,res,next)=>{
     }
     else
     {
-      if(foundUser.type="OrgAdmin")
+      
+      if(foundUser.type=="OrgAdmin")
       {
         const orgAdmin=await OrgSchema.findOne({ID:_id});
-        finalFoundUser={...foundUser,...orgAdmin}
+        const finalFoundUser=({...orgAdmin,Username:foundUser.Username,Email:foundUser.Email})
+        //finalFoundUser={Username,Email, ...orgAdmin}
+        return res.status(200).json({finalFoundUser});
       }
-      else if(foundUser.type="PlatformAdmin")
+      else if(foundUser.type=="PlatformAdmin")
       {
         const platformAdmin=await PlatformAdmin.findOne({ID:_id});
-        finalFoundUser={...foundUser,...platformAdmin}
+        const finalFoundUser=({...platformAdmin,Username:foundUser.Username,Email:foundUser.Email})
+        return res.status(200).json({finalFoundUser});
+        //finalFoundUser={...foundUser,...platformAdmin}
       }
       else
       {
         const platformUser=await PlatfromUser.findOne({ID:_id});
-        finalFoundUser={...foundUser,...platformUser}
+        //finalFoundUser={...foundUser,...platformUser}
+        const finalFoundUser=({...platformUser,Username:foundUser.Username,Email:foundUser.Email})
+        return res.status(200).json({finalFoundUser});
       }
-      return res.status(200).json({finalFoundUser});
+      
     }
     
   } catch (error) {
@@ -121,3 +169,46 @@ export const getOneUser=async(req,res,next)=>{
   }
 
 }
+
+export const updateCommonUser=async(req,res,next)=>
+{
+  try {
+    const {id:_id}=req.params
+    const foundUser=await userSchema.findOne({_id});
+    if(foundUser)
+    {
+      const {Password,Username}=req.body;
+      if(Password)
+      {
+        const hashedPassword=await bcrypt.hash(Password,10);
+        req.body.Password=hashedPassword
+      }
+      await userSchema.updateOne({_id},req.body)
+      
+      if(foundUser.type=="OrgAdmin")
+      {
+        const foundOrg=await OrgSchema.findOne({ID:_id})
+
+        await OrgSchema.updateOne({_id:foundOrg._id},req.body);
+
+      }
+      else if(foundUser.type=="PlatformUser")
+      {
+        const found=await PlatfromUser.findOne({ID:_id});
+        await PlatfromUser.updateOne({_id:found._id},req.body);
+      }
+      return res.status(401).json("User Update Successfully!!");
+    }
+    else
+    {
+      return res.status(401).json("User to be updated not found");
+    }
+
+  } catch (error) {
+    
+  }
+}
+
+//if else for cheking ids and type
+//everything update using if-else
+//register mn if else.
