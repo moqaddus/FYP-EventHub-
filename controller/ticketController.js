@@ -20,7 +20,7 @@ export const createTicketAndAttendee = async (req, res) => {
       return res.status(400).json({ error: 'User not found' });
     }
     let tickets=eventExists.TotalTickets;
-    if(tickets<=0)
+    if(tickets<1)
     {
       return res.status(400).json({ error: 'Unsufficient Tickets' });
     }
