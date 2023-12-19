@@ -5,11 +5,12 @@ const messagesSchema = new Schema({
   ID: { type: Number, required: true },
   Message: { type: String, required: true },
   TimeStamp: { type: Date, default: Date.now },
-
-  //Sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  ChatID: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat', required: true },
+  Sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   Receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
-const Messages = mongoose.model('Messages', messagesSchema);
+const Message = mongoose.model('Message', messagesSchema);
 
-module.exports = Messages;
+//module.exports = Message;
+export default Message;

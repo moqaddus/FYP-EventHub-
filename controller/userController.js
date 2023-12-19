@@ -1,7 +1,7 @@
 import PlatfromUser from '../models/platformUser.js'
 import bcrypt from 'bcryptjs';
 import InterestSchema from '../models/interest.js'
-import userSchema from '../models/User.js'
+import userSchema from '../models/user.js'
 
 let interestIds;
 //will take id from params(foreign key)

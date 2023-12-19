@@ -1,4 +1,4 @@
-import userSchema from '../models/User.js'
+import userSchema from '../models/user.js'
 import OrgSchema from '../models/organization.js'
 import PlatformAdmin from '../models/platformAdmin.js'
 import PlatfromUser from '../models/platformUser.js'

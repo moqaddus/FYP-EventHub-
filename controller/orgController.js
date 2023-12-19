@@ -1,6 +1,6 @@
 import orgSchema from '../models/organization.js';
 import Event from '../models/event.js';
-import userSchema from '../models/User.js'
+import userSchema from '../models/user.js'
 
  export const addOrganization = async (req, res) => {
     try {

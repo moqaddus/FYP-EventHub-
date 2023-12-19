@@ -11,4 +11,5 @@ const projectEnumsSchema = new Schema({
 
 const ProjectEnums = mongoose.model('ProjectEnums', projectEnumsSchema);
 
-module.exports = ProjectEnums;
+//module.exports = ProjectEnums;
+export default ProjectEnums;
