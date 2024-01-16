@@ -57,7 +57,29 @@ export const updateMedia = async (req, res) => {
   }
 };
 
-export const getMedia = async (req, res) => {
+
+export const getAllMedia = async (req, res) => {
+  try {
+    const allMedia = await Media.find();
+
+    if (!allMedia || allMedia.length === 0) {
+      return res.status(404).json({ message: 'No media found' });
+    }
+
+    const formattedMedia = allMedia.map(({ Type, BeforeAfter, URL, Event }) => ({
+      Type,
+      BeforeAfter,
+      URL,
+      Event
+    }));
+
+    res.status(200).json(formattedMedia);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getMediaById = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -67,14 +89,7 @@ export const getMedia = async (req, res) => {
       return res.status(404).json({ message: 'Media not found' });
     }
 
-    const { Type, BeforeAfter, URL, Event } = media;
-
-    res.status(200).json({
-      Type,
-      BeforeAfter,
-      URL,
-      Event
-    });
+    res.status(200).json({ media });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

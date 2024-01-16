@@ -1,23 +1,27 @@
 import express from 'express';
 import {
-  addUserInterest,
   updateUserInterests,
+  addUserInterest,
   deleteUserInterest,
-  getUserInterests,
+  getAllUserInterests,
+  getUserInterestById,
 } from '../controller/interestsController.js';
 
 const router = express.Router();
 
-// Add Interest to User
-router.post('/addUserInterest', addUserInterest);
+// Update user interests
+router.patch('/update', updateUserInterests);
 
-// Update User Interests
-router.patch('/updateUserInterests', updateUserInterests);
+// Add user interest
+router.post('/add', addUserInterest);
 
-// Delete User Interest
-router.delete('/deleteUserInterest', deleteUserInterest);
+// Delete user interest
+router.delete('/delete', deleteUserInterest);
 
-// Get User Interests
-router.get('/getUserInterests/:userID', getUserInterests);
+// Get all user interests
+router.get('/getAll/:userID', getAllUserInterests);
+
+// Get user interest by ID
+router.get('/get/:userID/:interestID', getUserInterestById);
 
 export default router;
