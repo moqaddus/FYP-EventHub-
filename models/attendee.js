@@ -3,14 +3,15 @@ const {Schema} =mongoose;
 
 
 const attendeeSchema = new Schema({
-  ID: { type: Number, required: true },
-  Ticket: { type: mongoose.Schema.Types.ObjectId, ref: 'ticket', required: true },
+  UserID: { type: mongoose.Schema.Types.ObjectId, ref: 'PlatformUser', required: true },///Change
+  EventID:{ type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true},
+  TicketCode: { type: String, required: true },
   CheckedIn: { type: Boolean, default: false },
   Rating: { type: Number },
   Review: { type: String },
 });
 
-const Attendee = model('Attendee', attendeeSchema);
+const Attendee = mongoose.model('Attendee', attendeeSchema);
 
 export default Attendee;
 //module.exports = Attendee;
