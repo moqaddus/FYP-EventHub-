@@ -36,12 +36,7 @@ export const register=async(req,res,next)=>{
     //res.status(201).json({user:user})
     if(type=="OrgAdmin")
       {
-        const {Status,Description}=req.body
-        if(!Status)
-        {
-          res.status(401).json({message:'Status not selected'});
-        }
-        const User=new OrgSchema({ID:user._id,Status,Description});
+        const User=new OrgSchema({ID:user._id});
         await User.save();
   
       }
@@ -53,19 +48,19 @@ export const register=async(req,res,next)=>{
       }
       else if(type=="PlatformUser")
       {
-        const {Bio,Interests}=req.body;
-        if(Interests)
-        {
-          interestIds = await Promise.all(Interests.map(async (interestName) => {
-            // Try to find the interest by name
-            const interest = await InterestSchema.findOne({ Name: interestName });
+        
+        // if(Interests)
+        // {
+        //   interestIds = await Promise.all(Interests.map(async (interestName) => {
+        //     // Try to find the interest by name
+        //     const interest = await InterestSchema.findOne({ Name: interestName });
       
-            // If found, return the ID; otherwise, you might want to handle this case
-            return interest ? interest._id : null;
-          }));
-        }
+        //     // If found, return the ID; otherwise, you might want to handle this case
+        //     return interest ? interest._id : null;
+        //   }));
+        // }
       
-        const User=new PlatfromUser({ID:user._id,Interests:interestIds,Bio})
+        const User=new PlatfromUser({ID:user._id})
         User.save();
       }
       else
