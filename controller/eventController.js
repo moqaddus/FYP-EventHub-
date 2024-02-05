@@ -18,8 +18,19 @@ export const addEvent = async (req, res) => {
       eventTags,
       Status,
       PlatformAdminName,
-      OrganizationID,
+      //OrganizationID,
     } = req.body;
+    const {id:UserID} = req.user;
+   
+    const organization_1 = await Organization.findOne({ID:UserID});
+    console.log(organization_1);
+    if (!organization_1) {
+      return res.status(404).json({ message: 'Organization not found for the user' });
+    }
+
+    const OrganizationID = organization_1._id;
+
+
 
     // Check if eventTags array is provided
     let eventTagIds = [];
@@ -143,17 +154,29 @@ export const updateEvent = async (req, res) => {
 
 export const getAllOrganizationEvents = async (req, res) => {
   try {
-    const { id } = req.params; // Organization ID
+    //const { id } = req.params; // Organization ID
 
-    // Find the organization by ID
-    const organization = await Organization.findById(id);
-
-    if (!organization) {
-      return res.status(404).json({ message: 'Organization not found' });
+    const {id:UserID} = req.user;
+   
+    const organization_1 = await Organization.findOne({ID:UserID});
+    console.log(organization_1);
+    if (!organization_1) {
+      return res.status(404).json({ message: 'Organization not found for the user' });
     }
 
+    const iid = organization_1._id;
+
+
+
+    // Find the organization by ID
+    // const organization = await Organization.findById(iid);
+
+    // if (!organization) {
+    //   return res.status(404).json({ message: 'Organization not found' });
+    // }
+
     // Find all events associated with the organization
-    const events = await Event.find({ Organization: id });
+    const events = await Event.find({ Organization: iid });
 
     // Count of events for the organization
     const eventCount = events.length;
@@ -166,14 +189,26 @@ export const getAllOrganizationEvents = async (req, res) => {
 
 export const getSingleEvent = async (req, res) => {
   try {
-    const { orgId, eventId } = req.params; // Organization ID and Event ID
+   // const { orgId, eventId } = req.params; // Organization ID and Event ID
+
+       const { eventId } = req.params;
+
+       const {id:UserID} = req.user;
+   
+       const organization_1 = await Organization.findOne({ID:UserID});
+       console.log(organization_1);
+       if (!organization_1) {
+         return res.status(404).json({ message: 'Organization not found for the user' });
+       }
+   
+       const orgId = organization_1._id;
 
     // Find the organization by ID
-    const organization = await Organization.findById(orgId);
+    // const organization = await Organization.findById(orgId);
 
-    if (!organization) {
-      return res.status(404).json({ message: 'Organization not found' });
-    }
+    // if (!organization) {
+    //   return res.status(404).json({ message: 'Organization not found' });
+    // }
 
     // Find the event by ID associated with the organization
     const event = await Event.findOne({ _id: eventId, Organization: orgId });
@@ -191,14 +226,26 @@ export const getSingleEvent = async (req, res) => {
 
 export const deleteOrganizationEvent = async (req, res) => {
   try {
-    const { orgId, eventId } = req.params; // Organization ID and Event ID
+    //const { orgId, eventId } = req.params; // Organization ID and Event ID
 
     // Find the organization by ID
-    const organization = await Organization.findById(orgId);
+    // const organization = await Organization.findById(orgId);
 
-    if (!organization) {
-      return res.status(404).json({ message: 'Organization not found' });
-    }
+    // if (!organization) {
+    //   return res.status(404).json({ message: 'Organization not found' });
+    // }
+
+    const { eventId } = req.params;
+
+       const {id:UserID} = req.user;
+   
+       const organization = await Organization.findOne({ID:UserID});
+       console.log(organization);
+       if (!organization) {
+         return res.status(404).json({ message: 'Organization not found for the user' });
+       }
+   
+       const orgId = organization._id;
 
     // Find the event by ID associated with the organization
     const event = await Event.findOne({ _id: eventId, Organization: orgId });

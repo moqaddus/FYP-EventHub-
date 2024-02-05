@@ -4,8 +4,13 @@ import userSchema from '../models/user.js'
 
  export const addOrganization = async (req, res) => {
     try {
-      const { ID, Status, Description } = req.body; // Assuming events contain names of events
+      //const { ID, Status, Description } = req.body; // Assuming events contain names of events
   
+      const { Status , Description } = req.body;
+
+      //Now i am taking this ID from token in which i have stored id of user
+      const { id:ID } = req.user;
+
       // Find the user by ID provided in the request
       const user = await userSchema.findById(ID);
   

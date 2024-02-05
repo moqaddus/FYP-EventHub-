@@ -1,6 +1,6 @@
 import  express  from "express";
 import { addEvent,updateEvent,getAllOrganizationEvents,getSingleEvent,deleteOrganizationEvent } from "../controller/eventController.js";
-
+import { authenticateOrgAdmin } from "../middleware/verifyOrgtokens.js";
 
 
 
@@ -8,10 +8,10 @@ import { addEvent,updateEvent,getAllOrganizationEvents,getSingleEvent,deleteOrga
 const router=express.Router();
 
 
-router.post('/Register',addEvent)//all type of user register
-router.patch('/Update/:id',updateEvent)
-router.get('/GetAllOrganizationEvents/:id',getAllOrganizationEvents)
-router.get('/GetSingleEvent/:orgId/:eventId',getSingleEvent)
-router.delete('/Delete/:orgId/:eventId',deleteOrganizationEvent)
+router.post('/Register',authenticateOrgAdmin,addEvent)//all type of user register
+router.patch('/Update/:id',authenticateOrgAdmin,updateEvent)
+router.get('/GetAllOrganizationEvents',authenticateOrgAdmin,getAllOrganizationEvents)
+router.get('/GetSingleEvent/:eventId',authenticateOrgAdmin,getSingleEvent)
+router.delete('/Delete/:eventId',authenticateOrgAdmin,deleteOrganizationEvent)
 
 export default router;

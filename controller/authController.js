@@ -17,7 +17,7 @@ export const register=async(req,res,next)=>{
     const {Username,Email,Password,type}=req.body
     //if already registered
     const emailInUse=await userSchema.exists({Email});
-    const usernameInUse=await userSchema.exists({Password});
+    const usernameInUse=await userSchema.exists({Username});
     if(emailInUse)
     {
       res.status(401).json({message:'Already registered with this email'})
