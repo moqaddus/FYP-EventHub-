@@ -7,7 +7,7 @@ let interestIds;
 //will take id from params(foreign key)
 export const addNewUser=async(req,res,next)=>{
   try {
-    const {id:ID}=req.params;
+    const {id:ID}=req.user;
   //let Interests=[]
   const {Bio,Interests}=req.body;
   if(Interests)
@@ -33,36 +33,41 @@ export const addNewUser=async(req,res,next)=>{
 
 //will get platfromUser id.
 export const updateUser=async(req,res,next)=>{
-  const {id:_id}=req.params;
-  const foundUser=await PlatfromUser.findOne({_id})
+  const {id:_id}=req.user
+  const foundUser=await userSchema.findOne({_id});
   if(foundUser)
   {
-    const foundOne=await userSchema.findOne({_id:foundUser.ID});
-    const foundId=foundOne._id;
-    const {Password}=req.body;
-    if(Password)
+    const {Password,Username}=req.body;
+    if(Username)
+    {
+      const usernameInUse=await userSchema.exists({Username});
+      res.status(409).json({message:'Username not available'})
+    }
+    if(Password || Username)
     {
       const hashedPassword=await bcrypt.hash(Password,10);
       req.body.Password=hashedPassword
+      await userSchema.updateOne({_id},req.body)
     }
-    
-    await userSchema.updateOne({_id:foundId},req.body)
-    
-
-    const User=await PlatfromUser.updateOne({_id},req.body)
+    const User=await PlatfromUser.updateOne({ID:_id},req.body)
     res.status(201).json({user:User})
   }
+  else
+  {
+    res.status(404).json("User not found")
+  }
+  
 }
 
 //Will get id of platform user
 export const getOneUser=async(req,res,next)=>{
 
-  const {id:_id}=req.params;
-  const foundUser=await PlatfromUser.findOne({_id})
+  const {id:_id}=req.user;
+  const foundUser=await userSchema.findOne({_id});
   if(foundUser)
   {
-    const foundOne=await userSchema.findOne({_id:foundUser.ID});
-    const newUser=({...foundUser,Username:foundOne.Username,Email:foundOne.Email})
+    const foundOne=await PlatfromUser.findOne({ID:_id});
+    const newUser=({...foundOne,Username:foundUser.Username,Email:foundUser.Email})
     res.status(201).json({user:newUser})
 
   }
@@ -75,18 +80,18 @@ export const getOneUser=async(req,res,next)=>{
 export const deleteUser=async(req,res,next)=>{
 
   try {
-    const {id:_id}=req.params;
-  const foundUser=await PlatfromUser.findOne({_id})
-  if(!foundUser)
-  {
-     return res.status(200).json({message:'User Not found'})
-  }
+    const {id:_id}=req.user;
+    const foundUser=await userSchema.findOne({_id});
+    if(!foundUser)
+    {
+       return res.status(200).json({message:'User Not found'})
+    }
   else
   {
     try {
-      await PlatfromUser.deleteOne({_id})
+      await PlatfromUser.deleteOne({ID:_id})
       try {
-        await userSchema.deleteOne({_id:foundUser.ID})
+        await userSchema.deleteOne({_id})
         return res.status(201).json({message:'Successfully Deleted'})
       } catch (error) {
         return res.status(409).json({message:'Unable to delete Corresponding User obj'})
