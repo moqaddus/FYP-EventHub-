@@ -34,11 +34,30 @@ export const register=async(req,res,next)=>{
     const user=new userSchema({ID:uuidv4(),Username:Username,Email:Email,Password:hashedPassword,type:type})
     await user.save();
     //res.status(201).json({user:user})
-    
-    if(user.type!="OrgAdmin" && user.type!="PlatformUser" && user.type!="PlatformAdmin")
-    {
-      res.status(401).json({message:'Wrong type'});
-    }
+
+    if(type=="OrgAdmin")
+      {
+        const User=new OrgSchema({ID:user._id});
+        await User.save();
+
+      }
+      else if(type=="PlatformAdmin")
+      {
+
+        const User=new PlatformAdmin({ID:user._id})
+        await User.save(); 
+      }
+      else if(type=="PlatformUser")
+      {
+
+       
+        const User=new PlatfromUser({ID:user._id})
+        User.save();
+      }
+      else
+      {
+        res.status(401).json({message:'Wrong type'});
+      }
       const token = jwt.sign({ id: user._id, type:user.type }, 'your_secret_key_here');
       res.status(401).json({message:'User Added Successfully',token});
     

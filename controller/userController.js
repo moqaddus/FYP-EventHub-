@@ -4,7 +4,7 @@ import InterestSchema from '../models/interest.js'
 import userSchema from '../models/user.js'
 
 let interestIds;
-//will take id from params(foreign key)
+
 export const addNewUser=async(req,res,next)=>{
   try {
     const {id:ID}=req.user;
@@ -49,7 +49,18 @@ export const updateUser=async(req,res,next)=>{
       req.body.Password=hashedPassword
       await userSchema.updateOne({_id},req.body)
     }
-    const User=await PlatfromUser.updateOne({ID:_id},req.body)
+    const {Bio,Interests}=req.body;
+    if(Interests)
+    {
+      interestIds = await Promise.all(Interests.map(async (interestName) => {
+        // Try to find the interest by name
+        const interest = await InterestSchema.findOne({ Name: interestName });
+  
+        // If found, return the ID; otherwise, you might want to handle this case
+        return interest ? interest._id : null;
+      }));
+    }
+    const User=await PlatfromUser.updateOne({ID:_id,Interests:interestIds,Bio})
     res.status(201).json({user:User})
   }
   else
