@@ -1,7 +1,8 @@
 import  express  from "express";
-import { addOrganization,updateOrganization,getOrganization } from "../controller/orgController.js";
+import { addOrganization,updateOrganization,getOrganization,uploadProfileImg } from "../controller/orgController.js";
 import { addUser } from "../controller/simpleUser.js";
 import { authenticateOrgAdmin } from "../middleware/verifyOrgtokens.js";
+import {upload} from "../middleware/multer.js";
 
 
 
@@ -13,5 +14,5 @@ router.post('/Register',authenticateOrgAdmin,addOrganization)//all type of user 
 router.patch('/Update/:id',authenticateOrgAdmin,updateOrganization)
 router.get('/Get/:id',authenticateOrgAdmin,getOrganization);
 router.post('/simpleUser',addUser);
-
+router.post('/uploadImg',authenticateOrgAdmin,upload.single('image'),uploadProfileImg);
 export default router;

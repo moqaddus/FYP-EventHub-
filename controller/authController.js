@@ -35,7 +35,7 @@ export const register=async(req,res,next)=>{
     await user.save();
     //res.status(201).json({user:user})
 
-    if(type=="OrgAdmin")
+      if(type=="OrgAdmin")
       {
         const User=new OrgSchema({ID:user._id});
         await User.save();
@@ -93,7 +93,7 @@ export const login=async(req,res,next)=>{
         try {
           //const token=foundUser.createJWT();
           //res.cookie('access_token', token, { httpOnly: true });
-          const token = jwt.sign({ id: foundUser._id,type:user.type }, 'your_secret_key_here');
+          const token = jwt.sign({ id: foundUser._id,type:foundUser.type }, 'your_secret_key_here');
           res.status(200).json({message:"Welcome "+ foundUser.Username,token})
 
 
